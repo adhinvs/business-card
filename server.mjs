@@ -10,6 +10,7 @@ const PORT = Number(process.env.PORT || 3000);
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 const COOKIE = 'bio_session';
 const defaultProfile = {
+  design: {}, showBio: false, saveLabel: 'Save Contact', whatsappUrl: '',
   name: 'Adhin V S', title: 'Cyber Security Expert & Human Risk Specialist', company: 'Founder · The Blue Signal',
   bio: 'Cybersecurity professional, corporate trainer, and human risk specialist focused on the human side of cybersecurity.', photo: '', email: 'reachadhinvs@gmail.com', phone: '',
   whatsapp: '', whatsappMessage: 'Hi Adhin, we met and I would like to connect.', website: 'https://adhinvs.com',
