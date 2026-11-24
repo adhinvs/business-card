@@ -50,6 +50,7 @@ const server=http.createServer(async(req,res)=>{
   try {
     const url=new URL(req.url,'http://localhost'), pathname=url.pathname;
     res.setHeader('X-Content-Type-Options','nosniff');
+    res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive, nosnippet, noimageindex');
     res.setHeader('X-Frame-Options','DENY');
     res.setHeader('Referrer-Policy','same-origin');
     if(!['GET','HEAD'].includes(req.method)&&req.headers.origin&&req.headers.origin!==(process.env.PUBLIC_URL||`http://${req.headers.host}`))return json(res,403,{error:'Origin not allowed'});

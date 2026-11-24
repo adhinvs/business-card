@@ -35,7 +35,7 @@ const designReady = setInterval(() => {
     const website=document.querySelector('.profile-website');
     const globe=document.createElement('img');globe.src='/globe.svg';globe.alt='';website.prepend(globe);
     const framework=[...document.querySelectorAll('.feature-card')].find(card=>card.querySelector('h3')?.textContent==='AICR Framework');
-    if(framework)framework.querySelector('.card-icon').innerHTML='<img src="/aicr.svg" alt="AICR framework">';
+    if(framework)framework.querySelector('.card-icon').innerHTML='<img src="/aicr.png" alt="AICR framework">';
     return;
   }
   const panel=document.createElement('section');panel.className='panel';panel.id='editable-design';panel.innerHTML='<h2>Contact actions</h2><p>Manage contact downloads and destinations. Publish changes to save.</p>';
