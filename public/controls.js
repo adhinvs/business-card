@@ -23,7 +23,13 @@ const designReady = setInterval(() => {
     apply(document,profile.design||{});
     document.querySelector('#bio').hidden=!profile.showBio;
     document.querySelector('#save').lastChild.textContent=' '+(profile.saveLabel||'Save Contact');
-    if(profile.whatsappUrl && safeURL(profile.whatsappUrl)){const link=document.createElement('a');link.className='button outline';link.textContent='WhatsApp';link.href=profile.whatsappUrl;document.querySelector('.hero-actions').append(link);}
+    const exchange=document.querySelector('#exchange-open');
+    exchange.hidden=!(profile.exchangeEnabled && /^https:\/\//i.test(profile.whatsappUrl||''));
+    if(!exchange.hidden)exchange.href=profile.whatsappUrl;
+    const website=document.querySelector('.profile-website');
+    const globe=document.createElement('img');globe.src='/globe.svg';globe.alt='';website.prepend(globe);
+    const framework=[...document.querySelectorAll('.feature-card')].find(card=>card.querySelector('h3')?.textContent==='AICR Framework');
+    if(framework)framework.querySelector('.card-icon').innerHTML='<img src="/aicr.svg" alt="AICR framework">';
     return;
   }
   const panel=document.createElement('section');panel.className='panel';panel.id='editable-design';panel.innerHTML='<h2>Page design and content</h2><p>Edit the existing cards. Publish changes to save.</p>';
@@ -32,6 +38,11 @@ const designReady = setInterval(() => {
   field(panel,'Show introduction',profile.showBio,v=>profile.showBio=v,'checkbox');
   field(panel,'Save contact label',profile.saveLabel,v=>profile.saveLabel=v);
   field(panel,'WhatsApp / walink destination',profile.whatsappUrl,v=>profile.whatsappUrl=v);
+  const uploadLabel=document.createElement('label');uploadLabel.textContent='Upload contact file (.vcf). Without an upload, the profile and contact privacy settings generate the download.';
+  const upload=document.createElement('input');upload.type='file';upload.accept='.vcf,text/vcard';
+  const status=document.createElement('p');status.textContent=profile.vcard?'Uploaded vCard selected':'Using profile details';
+  upload.onchange=async()=>{const file=upload.files[0];if(!file)return;if(file.size>100000){status.textContent='Choose a vCard under 100 KB';return;}const text=await file.text();if(!/^BEGIN:VCARD\r?\n/i.test(text)||!/END:VCARD\s*$/i.test(text)){status.textContent='This file is not a valid vCard';return;}profile.vcard=text;status.textContent='vCard ready — publish changes to save';};
+  const clear=document.createElement('button');clear.type='button';clear.textContent='Use profile details instead';clear.onclick=()=>{profile.vcard='';upload.value='';status.textContent='Profile details selected — publish changes to save';};uploadLabel.append(upload);panel.append(uploadLabel,status,clear);
   fetch('/').then(r=>r.text()).then(html=>{
     const doc=new DOMParser().parseFromString(html,'text/html');profile.design ||= {};
     doc.querySelectorAll(editable).forEach((node,index)=>{

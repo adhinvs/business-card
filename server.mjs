@@ -10,7 +10,7 @@ const PORT = Number(process.env.PORT || 3000);
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 const COOKIE = 'bio_session';
 const defaultProfile = {
-  design: {}, showBio: false, saveLabel: 'Save Contact', whatsappUrl: '',
+  vcard: '', design: {}, showBio: false, saveLabel: 'Save Contact', whatsappUrl: '',
   name: 'Adhin V S', title: 'Cyber Security Expert & Human Risk Specialist', company: 'Founder · The Blue Signal',
   bio: 'Cybersecurity professional, corporate trainer, and human risk specialist focused on the human side of cybersecurity.', photo: '', email: 'reachadhinvs@gmail.com', phone: '',
   whatsapp: '', whatsappMessage: 'Hi Adhin, we met and I would like to connect.', website: 'https://adhinvs.com',
@@ -40,9 +40,11 @@ function cleanProfile(raw){
   for(const k of ['email','phone','whatsapp','whatsappMessage','website','linkedin','location','n8nWebhook'])p[k]=String(p[k]||'').slice(0,k==='n8nWebhook'?1000:500);
   p.accent=/^#[0-9a-f]{6}$/i.test(p.accent)?p.accent:'#0444FF';p.background=/^#[0-9a-f]{6}$/i.test(p.background)?p.background:'#f5f7ff';p.exchangeEnabled=!!p.exchangeEnabled;p.analyticsEnabled=!!p.analyticsEnabled;
   if(p.photo && !/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(p.photo))p.photo='';
+  p.vcard=typeof p.vcard==='string'&&p.vcard.length<=100000&&/^BEGIN:VCARD\r?\n/i.test(p.vcard)&&/END:VCARD\s*$/i.test(p.vcard)?p.vcard:'';
+  p.whatsappUrl=typeof p.whatsappUrl==='string'&&/^https:\/\//i.test(p.whatsappUrl)?p.whatsappUrl.slice(0,2000):'';
   return p;
 }
-function publicProfile(){const p=structuredClone(store.profile); delete p.n8nWebhook; if(!p.contacts.phone)p.phone='';if(!p.contacts.email)p.email='';if(!p.contacts.website)p.website='';if(!p.contacts.location)p.location='';return p;}
+function publicProfile(){const p=structuredClone(store.profile); delete p.n8nWebhook; delete p.vcard; if(!p.contacts.phone)p.phone='';if(!p.contacts.email)p.email='';if(!p.contacts.website)p.website='';if(!p.contacts.location)p.location='';return p;}
 async function sendWebhook(payload){const url=store.profile.n8nWebhook;if(!url)return;try{const u=new URL(url);if(!['https:','http:'].includes(u.protocol))return;await fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload),signal:AbortSignal.timeout(5000)});}catch(e){console.error('Webhook delivery failed:',e.message);}}
 const server=http.createServer(async(req,res)=>{
   try {
@@ -77,6 +79,7 @@ const server=http.createServer(async(req,res)=>{
       record('contact exchange');await sendWebhook(entry);return json(res,200,{ok:true});
     }
     if(pathname==='/card.vcf'){
+      if(store.profile.vcard)return res.writeHead(200,{'content-type':'text/vcard; charset=utf-8','content-disposition':'attachment; filename="contact.vcf"','cache-control':'no-store'}).end(store.profile.vcard);
       const p=publicProfile();const lines=['BEGIN:VCARD','VERSION:3.0',`FN:${p.name}`,`ORG:${p.company}`,`TITLE:${p.title}`];if(p.email)lines.push(`EMAIL;TYPE=WORK:${p.email}`);if(p.phone)lines.push(`TEL;TYPE=CELL:${p.phone}`);if(p.website)lines.push(`URL:${p.website}`);if(p.location)lines.push(`ADR;TYPE=WORK:;;${p.location};;;;`);lines.push('END:VCARD');return res.writeHead(200,{'content-type':'text/vcard; charset=utf-8','content-disposition':'attachment; filename="contact.vcf"','cache-control':'no-store'}).end(lines.join('\r\n'));
     }
     if(pathname==='/api/event'&&req.method==='POST'){const b=await body(req);const allowed=new Set(['share','contact download','whatsapp','link click']);if(allowed.has(b.event))record(b.event);return json(res,200,{ok:true});}
