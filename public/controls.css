@@ -8,7 +8,7 @@
 #support .list-card small{display:block;margin-top:5px;line-height:1.5}
 .list-card>a>span:first-child{font-size:40px;flex:0 0 52px;width:52px;text-align:center;line-height:1.2}
 .profile-website img{width:23px;height:23px;object-fit:contain;margin-right:8px}
-.profile-linkedin .linkedin-mark{width:25px;height:25px;font-size:17px}
+.profile-links .profile-linkedin .linkedin-mark{width:23px;height:23px;min-width:23px;max-width:23px;flex:0 0 23px;aspect-ratio:1;line-height:1;padding:0;display:grid;place-items:center;font-size:16px;border-radius:4px}
 .feature-card .card-icon{flex:0 0 112px;width:112px;box-sizing:border-box;display:flex;align-items:center;justify-content:center}
 .feature-card>div{min-width:0}.feature-card .card-link{white-space:normal;max-width:100%}
 .feature-card .card-icon{flex-basis:128px;width:128px;font-size:64px}
