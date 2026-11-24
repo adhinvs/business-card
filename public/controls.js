@@ -24,8 +24,14 @@ const designReady = setInterval(() => {
     document.querySelector('#bio').hidden=!profile.showBio;
     document.querySelector('#save').lastChild.textContent=' '+(profile.saveLabel||'Save Contact');
     const exchange=document.querySelector('#exchange-open');
-    exchange.hidden=!(profile.exchangeEnabled && /^https:\/\//i.test(profile.whatsappUrl||''));
-    if(!exchange.hidden)exchange.href=profile.whatsappUrl;
+    const destination=profile.exchangeUrl||profile.whatsappUrl||(profile.whatsapp?'https://wa.me/'+profile.whatsapp.replace(/\D/g,''):'');
+    exchange.hidden=profile.exchangeEnabled===false;
+    if(/^https:\/\//i.test(destination)){exchange.href=destination;}else{exchange.removeAttribute('href');exchange.setAttribute('aria-disabled','true');exchange.title='Contact exchange link has not been configured yet';}
+    const socials=document.querySelector('#contacts');
+    function social(label,icon,url){if(!url)return;const a=document.createElement('a');a.className='contact-link';a.href=url;a.title=label;a.setAttribute('aria-label',label);const span=document.createElement('span');span.className='contact-icon';const img=document.createElement('img');img.className='social-logo';img.src='/'+icon+'.svg';img.alt='';span.append(img);a.append(span);socials.append(a);}
+    social('Email','mail',profile.email?'mailto:'+profile.email:'');
+    social('WhatsApp','whatsapp',profile.whatsappUrl||(profile.whatsapp?'https://wa.me/'+profile.whatsapp.replace(/\D/g,''):''));
+    document.querySelectorAll('#support .list-card>a').forEach((row,i)=>{const span=row.querySelector('span');if(span){span.replaceChildren();const img=document.createElement('img');img.src='/support-'+['training','consultation','tea'][i]+'.svg';img.alt='';span.append(img);}});
     const website=document.querySelector('.profile-website');
     const globe=document.createElement('img');globe.src='/globe.svg';globe.alt='';website.prepend(globe);
     const framework=[...document.querySelectorAll('.feature-card')].find(card=>card.querySelector('h3')?.textContent==='AICR Framework');
@@ -37,6 +43,7 @@ const designReady = setInterval(() => {
   function field(parent,label,value,onchange,type='text'){const wrap=document.createElement('label');wrap.textContent=label;const input=document.createElement('input');input.type=type;if(type==='checkbox')input.checked=!!value;else input.value=value??'';input.oninput=()=>{onchange(type==='checkbox'?input.checked:input.value);document.querySelector('#save-status').textContent='Unsaved changes';};wrap.append(input);parent.append(wrap);}
   field(panel,'Show introduction',profile.showBio,v=>profile.showBio=v,'checkbox');
   field(panel,'Save contact label',profile.saveLabel,v=>profile.saveLabel=v);
+  field(panel,'Exchange Contacts destination',profile.exchangeUrl||profile.whatsappUrl,v=>profile.exchangeUrl=v,'url');
   field(panel,'WhatsApp / walink destination',profile.whatsappUrl,v=>profile.whatsappUrl=v);
   const uploadLabel=document.createElement('label');uploadLabel.textContent='Upload contact file (.vcf). Without an upload, the profile and contact privacy settings generate the download.';
   const upload=document.createElement('input');upload.type='file';upload.accept='.vcf,text/vcard';
@@ -47,12 +54,12 @@ const designReady = setInterval(() => {
     const doc=new DOMParser().parseFromString(html,'text/html');profile.design ||= {};
     doc.querySelectorAll(editable).forEach((node,index)=>{
       const item=profile.design[index] ||= {};item.text ||= {};item.urls ||= {};
-      const box=document.createElement('fieldset');const legend=document.createElement('legend');legend.textContent=node.querySelector('h3,b')?.textContent||node.textContent.trim().slice(0,60);box.append(legend);panel.append(box);
+      const box=document.createElement('details');const legend=document.createElement('summary');legend.textContent=node.matches('.section-icon')?(node.closest('.section')?.querySelector('h2')?.textContent+' — section icon'):node.querySelector('h3,b')?.textContent||node.textContent.trim().slice(0,60);box.append(legend);panel.append(box);
       field(box,'Hide / remove',item.hidden,v=>item.hidden=v,'checkbox');
       const targets=node.matches('h2,.section-icon')?[node]:[...node.querySelectorAll('h3,p,b,small,.card-link,.card-icon:not(:has(img)),a')];
       targets.forEach((target,i)=>{if(!target.querySelector('img,b'))field(box,'Text / icon',item.text[i]??target.textContent,v=>item.text[i]=v);});
       [node,...node.querySelectorAll('a,img')].forEach((target,i)=>{if(target.matches('a,img'))field(box,target.tagName==='IMG'?'Icon image URL':'Link URL',item.urls[i]??target.getAttribute(target.tagName==='IMG'?'src':'href'),v=>item.urls[i]=v);});
-      for(const key of ['padding','gap','fontSize','iconSize'])field(box,key+' (px; blank keeps original)',item[key],v=>item[key]=v,'number');
+      for(const key of ['padding','gap','fontSize','iconSize'])field(box,({padding:'Inner spacing',gap:'Space between items',fontSize:'Text size',iconSize:'Icon size'}[key])+' (px; optional)',item[key],v=>item[key]=v,'number');
       if(node.matches('.feature-card,.support-card,.list-card>a'))field(box,'Additional copies',item.copies||0,v=>item.copies=Number(v),'number');
     });
   });

@@ -1,4 +1,11 @@
 .wordmark span{background:#0444ff!important;color:#fff!important}
+#contacts{flex-wrap:wrap}
+#exchange-open[aria-disabled=true]{opacity:.65;cursor:default}
+#support .list-card>a{display:grid;grid-template-columns:52px minmax(0,1fr) 18px;gap:16px;align-items:center}
+#support .list-card>a>span:first-child img{width:40px;height:40px;display:block;margin:auto}
+#support .list-card>a>div{min-width:0;text-align:left}
+#support .list-card b{display:block;font-size:16px;line-height:1.4}
+#support .list-card small{display:block;margin-top:5px;line-height:1.5}
 .list-card>a>span:first-child{font-size:40px;flex:0 0 52px;width:52px;text-align:center;line-height:1.2}
 .profile-website img{width:23px;height:23px;object-fit:contain;margin-right:8px}
 .profile-linkedin .linkedin-mark{width:25px;height:25px;font-size:17px}
