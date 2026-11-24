@@ -46,6 +46,11 @@ async function sendWebhook(payload){const url=store.profile.n8nWebhook;if(!url)r
 const server=http.createServer(async(req,res)=>{
   try {
     const url=new URL(req.url,'http://localhost'), pathname=url.pathname;
+    res.setHeader('X-Content-Type-Options','nosniff');
+    res.setHeader('X-Frame-Options','DENY');
+    res.setHeader('Referrer-Policy','same-origin');
+    if(!['GET','HEAD'].includes(req.method)&&req.headers.origin&&req.headers.origin!==(process.env.PUBLIC_URL||`http://${req.headers.host}`))return json(res,403,{error:'Origin not allowed'});
+    if(pathname==='/api/admin/profile'){if(!isAdmin(req))return json(res,401,{error:'Sign in required'});return json(res,200,store.profile);}
     if(pathname==='/api/health')return json(res,200,{ok:true});
     if(pathname==='/api/setup/status')return json(res,200,{configured:!!store.passwordHash});
     if(pathname==='/api/setup'&&req.method==='POST'){
