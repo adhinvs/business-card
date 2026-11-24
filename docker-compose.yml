@@ -8,7 +8,7 @@ services:
       PUBLIC_URL: https://bio.adhinvs.com
       TRUST_PROXY: "1"
       # Optional: set a long random value in Dokploy for encrypted session cookies.
-      SESSION_SECRET: ${SESSION_SECRET}
+      SESSION_SECRET: ${SESSION_SECRET:-}
     volumes:
       - bio_card_data:/data
     ports:

@@ -5,6 +5,6 @@ COPY package.json server.mjs ./
 COPY public ./public
 RUN mkdir -p /data && chown -R node:node /app /data
 USER node
-EXPOSE 3000
+EXPOSE 5877
 VOLUME ["/data"]
 CMD ["node", "server.mjs"]

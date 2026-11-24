@@ -5,7 +5,7 @@ A self-hosted, single-owner digital networking card for `bio.adhinvs.com`. The p
 ## Deploy with Dokploy
 
 1. Push this folder to a private Git repository and create a Docker Compose application in Dokploy from that repository.
-2. Set the domain to `bio.adhinvs.com`, route HTTPS traffic to container port `3000`, and enable certificate provisioning.
+2. Set the domain to `bio.adhinvs.com`, route HTTPS traffic to service port `5877`, and enable certificate provisioning.
 3. Keep the named `bio_card_data` volume attached at `/data` for persistent profile and password data.
 4. Add `SESSION_SECRET` as a long random value in the Dokploy environment. This signs session cookies. If omitted, the app generates an ephemeral key on each restart and current sessions will sign out.
 5. Deploy, open `https://bio.adhinvs.com/admin`, and create the first administrator password. Use at least 12 characters. There are no default public credentials.

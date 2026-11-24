@@ -1,7 +1,7 @@
 # Deploying the digital card on Dokploy
 
 1. Push the application files to a private Git repository and connect it to a new Docker Compose application in Dokploy.
-2. Configure `bio.adhinvs.com` to route HTTPS requests to port `3000`.
+2. Configure `bio.adhinvs.com` to route HTTPS requests to service port `5877`.
 3. Preserve the named `bio_card_data` volume mounted at `/data`; it stores the editable profile and administrator password hash.
 4. Set `SESSION_SECRET` in Dokploy to a long random string so sessions remain valid across container restarts.
 5. Deploy, visit `/admin`, and set the initial administrator password (minimum 12 characters). No default credentials are shipped.
