@@ -5,7 +5,11 @@ const designReady = setInterval(() => {
   const editable = '.section-heading h2,.section-icon,.feature-card,.support-card,.list-card>a';
   const safeURL = value => /^(https?:\/\/|mailto:|tel:|\/[^/])/.test(value);
   function apply(doc, settings) {
-    doc.querySelectorAll(editable).forEach((node, index) => {
+    doc.querySelectorAll(editable).forEach((node, currentIndex) => {
+      // Preserve saved positions from before the personal website card existed.
+      if(node.matches('.personal-site-card'))return;
+      const personal=doc.querySelector('.personal-site-card');
+      const index=personal&&(personal.compareDocumentPosition(node)&4)?currentIndex-1:currentIndex;
       const item = settings[index]; if (!item) return;
       node.hidden = !!item.hidden;
       const targets = node.matches('h2,.section-icon') ? [node] : [...node.querySelectorAll('h3,p,b,small,.card-link,.card-icon:not(:has(img)),a')];

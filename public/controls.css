@@ -1,8 +1,8 @@
 .wordmark span{background:#0444ff!important;color:#fff!important}
-#save.button.primary{background:#fff;color:var(--blue);border-color:var(--blue);box-shadow:none}
-#exchange-open.button.outline{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 8px 24px #0444ff24}
-#save.button.primary img{filter:none}
-#exchange-open.button.outline img{filter:brightness(0) invert(1)}
+#save.button{background:#fff;color:var(--blue);border-color:var(--blue);box-shadow:none}
+#exchange-open.button{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 8px 24px #0444ff24}
+#save.button img{filter:none}
+#exchange-open.button img{filter:brightness(0) invert(1)}
 #contacts{flex-wrap:wrap}
 #exchange-open[aria-disabled=true]{opacity:.65;cursor:default}
 #support .list-card>a{display:grid;grid-template-columns:52px minmax(0,1fr) 18px;gap:16px;align-items:center}
