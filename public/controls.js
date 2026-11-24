@@ -24,7 +24,7 @@ const designReady = setInterval(() => {
     document.querySelector('#bio').hidden=!profile.showBio;
     document.querySelector('#save').lastChild.textContent=' '+(profile.saveLabel||'Save Contact');
     const exchange=document.querySelector('#exchange-open');
-    const destination=profile.exchangeUrl||profile.whatsappUrl||(profile.whatsapp?'https://wa.me/'+profile.whatsapp.replace(/\D/g,''):'');
+    const destination=[profile.exchangeUrl,profile.whatsappUrl].find(value=>/^https:\/\//i.test(value||''))||((profile.whatsapp||profile.exchangeUrl)?'https://wa.me/'+(profile.whatsapp||profile.exchangeUrl).replace(/\D/g,''):'');
     exchange.hidden=profile.exchangeEnabled===false;
     if(/^https:\/\//i.test(destination)){exchange.href=destination;}else{exchange.removeAttribute('href');exchange.setAttribute('aria-disabled','true');exchange.title='Contact exchange link has not been configured yet';}
     const socials=document.querySelector('#contacts');
@@ -43,7 +43,7 @@ const designReady = setInterval(() => {
   function field(parent,label,value,onchange,type='text'){const wrap=document.createElement('label');wrap.textContent=label;const input=document.createElement('input');input.type=type;if(type==='checkbox')input.checked=!!value;else input.value=value??'';input.oninput=()=>{onchange(type==='checkbox'?input.checked:input.value);document.querySelector('#save-status').textContent='Unsaved changes';};wrap.append(input);parent.append(wrap);}
   field(panel,'Show introduction',profile.showBio,v=>profile.showBio=v,'checkbox');
   field(panel,'Save contact label',profile.saveLabel,v=>profile.saveLabel=v);
-  field(panel,'Exchange Contacts destination',profile.exchangeUrl||profile.whatsappUrl,v=>profile.exchangeUrl=v,'url');
+  field(panel,'Exchange Contacts link or phone number',profile.exchangeUrl||profile.whatsappUrl,v=>profile.exchangeUrl=v);
   field(panel,'WhatsApp / walink destination',profile.whatsappUrl,v=>profile.whatsappUrl=v);
   const uploadLabel=document.createElement('label');uploadLabel.textContent='Upload contact file (.vcf). Without an upload, the profile and contact privacy settings generate the download.';
   const upload=document.createElement('input');upload.type='file';upload.accept='.vcf,text/vcard';

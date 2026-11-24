@@ -89,4 +89,5 @@ const server=http.createServer(async(req,res)=>{
   }catch(e){console.error(e);if(!res.headersSent)json(res,e.message==='Payload too large'?413:500,{error:e.message==='Payload too large'?'Payload too large':'Request failed'});else res.destroy();}
 });
 await fs.mkdir(DATA,{recursive:true});try{store=JSON.parse(await fs.readFile(path.join(DATA,'profile.json'),'utf8'));store.profile=cleanProfile(store.profile||{});}catch{store={profile:defaultProfile,passwordHash:null};await persist();}
+if(store.profile.exchangeUrl==='+916282571275'||!store.profile.exchangeUrl){store.profile.exchangeUrl='https://walink.me/dbu7dq';store.profile.whatsappUrl=store.profile.whatsappUrl||'https://walink.me/dbu7dq';store.profile.whatsapp=store.profile.whatsapp||'916282571275';await persist();}
 server.listen(PORT,'0.0.0.0',()=>console.log(`Bio card listening on ${PORT}`));
