@@ -1,0 +1,10 @@
+/* Final profile controls: equal size, restrained emphasis, bounded artwork. */
+.profile-links { display:flex; justify-content:center; align-items:center; gap:10px; margin:16px auto 8px; max-width:320px; }
+.profile-links > a { flex:1 1 0; min-width:0; width:auto; height:44px; padding:0 12px; margin:0; display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1px solid #dce5f4; border-radius:11px; background:#f8faff; box-shadow:none; color:#0444ff; font:600 14px 'DM Sans',sans-serif; letter-spacing:0; white-space:nowrap; text-decoration:none; }
+.profile-links > a:hover { background:#eaf0ff; border-color:#b4c8ff; }
+.profile-links img,.profile-links svg,.profile-links .linkedin-mark { width:20px; height:20px; max-width:20px; flex:0 0 20px; }
+.profile-links .linkedin-mark { font:700 14px Arial,sans-serif; }
+.page > *, .feature-card > *, .list-card div { min-width:0; }
+.section-heading h2,.support-card h3 { overflow-wrap:break-word; }
+dialog { max-height:90svh; overflow-y:auto; }
+@media(max-width:360px){.profile-links{gap:8px}.profile-links > a{padding:0 8px;font-size:13px}}
