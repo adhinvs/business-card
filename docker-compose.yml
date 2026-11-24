@@ -3,18 +3,18 @@ services:
     build: .
     restart: unless-stopped
     environment:
-      PORT: 3000
+      PORT: 5877
       DATA_DIR: /data
       PUBLIC_URL: https://bio.adhinvs.com
       TRUST_PROXY: "1"
       # Optional: set a long random value in Dokploy for encrypted session cookies.
-      SESSION_SECRET: ${SESSION_SECRET:-}
+      SESSION_SECRET: ${SESSION_SECRET}
     volumes:
       - bio_card_data:/data
     ports:
-      - "5877:3000"
+      - "5877:5877"
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:5877/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 5s
       retries: 3
