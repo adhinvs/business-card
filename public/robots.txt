@@ -1,10 +1,2 @@
-# Search crawlers must be able to read the site-wide noindex response header.
-# A blanket Disallow can leave the URL indexed without its content.
 User-agent: *
-Allow: /
-
-User-agent: GPTBot
-User-agent: ClaudeBot
-User-agent: CCBot
-User-agent: Google-Extended
 Disallow: /
